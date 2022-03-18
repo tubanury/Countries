@@ -68,7 +68,7 @@ class DetailView: UIView{
         temp.translatesAutoresizingMaskIntoConstraints =  false
         temp.contentMode = .center
         
-        temp.image = UIImage(named: "fav_star")
+        //temp.image = UIImage(named: "fav_star")
         return temp
         
     }()
