@@ -9,9 +9,6 @@ import UIKit
 
 class ViewController: UITabBarController {
    
-
-    //let home = CountryViewController()
-    //let saved = SavedCountryController()
     let home = UINavigationController(rootViewController: CountryViewController())
     let saved = UINavigationController(rootViewController: SavedCountryController())
     
@@ -35,13 +32,6 @@ class ViewController: UITabBarController {
         
         self.tabBar.tintColor = .black
         self.tabBar.backgroundColor = .gray
-    }
-    
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        DispatchQueue.main.async {
-            //self.saved.relo
-            //self.saved.tableView.reloadData()
-        }
     }
     
 }

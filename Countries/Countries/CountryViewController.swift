@@ -9,32 +9,14 @@ import Foundation
 import UIKit
 
 class CountryViewController: UITableViewController {
-    let cellId = "cellId123123"
+    
+    let cellId = "cellId"
     let cellSpacingHeight: CGFloat = 20
     let dvController = DetailViewController()
-    
-    func buttonClicked(cell: UITableViewCell){
-    
-        let indexClicked = tableView.indexPath(for: cell)
-        let index = indexClicked?.row
-        let isFavorited = CountryViewController.countriesList[index!].isFavourite
-        CountryViewController.countriesList[index!].isFavourite = !isFavorited
-        cell.accessoryView?.tintColor = isFavorited ? .systemBlue : .orange
-        
-        if !isFavorited {
-            SavedCountryController.favoritedCountries.append(CountryViewController.countriesList[index!])
-        }
-        else {
-            let index = SavedCountryController.favoritedCountries.firstIndex{ $0.name == CountryViewController.countriesList[index!].name }
-            if let index = index {
-                SavedCountryController.favoritedCountries.remove(at: index)
-            }
-        }
-        
-        
-    }
+    static var countriesList = [Country]()
 
-     static var countriesList = [Country]()
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,35 +24,25 @@ class CountryViewController: UITableViewController {
         //Auto-set the UITableViewCells height (requires iOS8+)
         self.tableView.separatorColor = UIColor.clear
 
-        //tableView.rowHeight = UITableView.automaticDimension
-        //tableView.estimatedRowHeight = 44
-        tableView.register(CountCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(CountryCell.self, forCellReuseIdentifier: cellId)
         NetworkService().fetchCountries { Countries in
             DispatchQueue.main.async {
                 for city in  Countries.data{
                     CountryViewController.countriesList.append(Country(isFavourite: false, name: city.name, countryCode: city.code))
-                    print(city.name)
                     self.tableView.reloadData()
                 }
             }
             
         }
         
-        
-        //view.backgroundColor = .lightGray
     }
 
-  
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
-
     }
     
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Num: 1")
           
-        self.tabBarController?.hidesBottomBarWhenPushed = true
         self.tabBarController?.tabBar.isHidden = true
         dvController.countryCode = CountryViewController.countriesList[indexPath.row].countryCode
         self.navigationController?.pushViewController(dvController, animated: true)
@@ -92,7 +64,7 @@ class CountryViewController: UITableViewController {
        }
   
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! CountCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! CountryCell
             cell.link = self
             let name = CountryViewController.countriesList[indexPath.row].name
             cell.textLabel?.text = name
@@ -106,6 +78,28 @@ class CountryViewController: UITableViewController {
         label.text = "Countries"
         label.textAlignment = .center
         return label
+    }
+    
+    
+    //Execute cell star button tapped
+    func markAsFavorite(cell: UITableViewCell){
+    
+        let indexClicked = tableView.indexPath(for: cell)
+        let index = indexClicked?.row
+        let isFavorited = CountryViewController.countriesList[index!].isFavourite
+        
+        CountryViewController.countriesList[index!].isFavourite = !isFavorited
+        cell.accessoryView?.tintColor = isFavorited ? .systemBlue : .orange
+        
+        if !isFavorited {
+            SavedCountryController.favoritedCountries.append(CountryViewController.countriesList[index!])
+        }
+        else {
+            let index = SavedCountryController.favoritedCountries.firstIndex{ $0.name == CountryViewController.countriesList[index!].name }
+            if let index = index {
+                SavedCountryController.favoritedCountries.remove(at: index)
+            }
+        }
     }
     
 }

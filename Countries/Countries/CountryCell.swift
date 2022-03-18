@@ -1,80 +1,57 @@
 //
-//  CountryCell.swift
+//  CountCell.swift
 //  Countries
 //
-//  Created by Tuba N. Yıldız on 15.03.2022.
+//  Created by Tuba N. Yıldız on 16.03.2022.
 //
 
 import Foundation
 import UIKit
 
-
-
-class CountryCell: UITableViewCell {
+class CountryCell: UITableViewCell{
+    
+    var link: CountryViewController?
+    var linkSaved: SavedCountryController?
     
     
-    private lazy var containerView: UIView = {
-           let view = UIView()
-           view.translatesAutoresizingMaskIntoConstraints = false
-           view.layer.cornerRadius = 2
-           view.clipsToBounds = true
+    //Border of cell
+    lazy var backView: UIView = {
 
-            view.addSubview(view2)
-           //view.backgroundColor = .systemPink
-           //view.addSubview(nameLabel)
-           //nameLabel.center(inView: view)
-           //nameLabel.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        view2.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 12, paddingLeft: 5, paddingBottom: 5, paddingRight: 5, width: 30, height: 20)
-           return view
-       }()
-    private lazy var view2: UIView = {
-           let view = UIView()
-           view.translatesAutoresizingMaskIntoConstraints = false
-           view.layer.cornerRadius = 2
-           view.clipsToBounds = true
+        let view = UIView()
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.cornerRadius = 10
+        view.translatesAutoresizingMaskIntoConstraints = false
 
-           //view.backgroundColor = .systemPink
-           view.addSubview(nameLabel)
-           //nameLabel.center(inView: view)
-           nameLabel.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-          
-           return view
-       }()
-    
-    let nameLabel: UILabel = {
-           let temp = UILabel()
-            temp.textColor = .black
-            //temp.font = UIFont.systemFont(ofSize: 16)
-            temp.text = "Germany"
-           
-            temp.textAlignment = .center
-            
-            return temp
-        }()
+        return view
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureViewConfigurations()
+    }
+  
+    @objc func handleMarkAsFavourite(){
+        print("mark as fav")
+        link?.markAsFavorite(cell: self)
+        linkSaved?.markFavorite(cell: self)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func configureViewConfigurations(){
-        self.layer.borderColor = UIColor.black.cgColor
-        self.layer.borderWidth = 1
-        self.layer.cornerRadius = 5
-        self.clipsToBounds = true
-        let iv = UIButton()
-        iv.setTitleColor(.purple, for: .normal)
-        iv.setImage(UIImage(named: "fav_star.png"), for: .normal)
-        iv.frame = CGRect(x: 0, y:0, width: 15, height:15)
+       
+        let star = UIButton()
+        star.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        let image = UIImage(#imageLiteral(resourceName: "fav_star_filled_2")).withRenderingMode(.alwaysTemplate)
+        star.setImage(image, for: .normal)
+        star.addTarget(self, action: #selector(handleMarkAsFavourite), for: .touchUpInside)
         
-        addSubview(containerView)
-        containerView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 48)
-
-        containerView.addSubview(iv)
+        accessoryView = star
+        
+        addSubview(backView)
+        backView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: -10, paddingRight: -10, width: 0, height: 15)
     }
-    
-    
+
 }

@@ -3,17 +3,9 @@
 //  Countries
 //
 //  Created by Tuba N. Yıldız on 16.03.2022.
-//
-
-import Foundation
 
 
-//
-//  CountryTable.swift
-//  Countries
-//
-//  Created by Tuba N. Yıldız on 15.03.2022.
-//
+
 
 import Foundation
 import UIKit
@@ -22,7 +14,7 @@ class SavedCountryController: UITableViewController {
 
     let cellSpacingHeight: CGFloat = 20
     static var favoritedCountries = [Country]()
-  
+    let detailView = DetailViewController()
     
     
     func markFavorite(cell: UITableViewCell){
@@ -31,7 +23,7 @@ class SavedCountryController: UITableViewController {
         let index = indexClicked?.row
         let isFavorited = CountryViewController.countriesList[index!].isFavourite
         CountryViewController.countriesList[index!].isFavourite = !isFavorited
-        cell.accessoryView?.tintColor = isFavorited ? .systemBlue : .orange
+        cell.accessoryView?.tintColor = .orange
         
         if !isFavorited {
             SavedCountryController.favoritedCountries.append(CountryViewController.countriesList[index!])
@@ -43,36 +35,33 @@ class SavedCountryController: UITableViewController {
             }
         }
         
-        
-        
-        //cell.accessoryView?.tintColor = isFavorited ? .systemBlue : .orange
-
-        
-        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
 
       
-        tableView.register(CountCell.self, forCellReuseIdentifier: "CountCell")
+        tableView.register(CountryCell.self, forCellReuseIdentifier: "CountCell")
         self.tableView.separatorColor = UIColor.clear
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.tableView.reloadData()
+        self.tabBarController?.tabBar.isHidden = false
+       
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            print("Num: 1")
-        }
+
+        self.tabBarController?.tabBar.isHidden = true
+        detailView.countryCode = SavedCountryController.favoritedCountries[indexPath.row].countryCode
+        self.navigationController?.pushViewController(detailView, animated: true)
+    }
 
     override  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return CountryViewController.countriesList.filter { Country in
-//            Country.isFavourite == true
-//        }.count
         return SavedCountryController.favoritedCountries.count
     }
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
             return 65
      }
@@ -82,9 +71,10 @@ class SavedCountryController: UITableViewController {
        }
    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CountCell", for: indexPath) as! CountCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CountCell", for: indexPath) as! CountryCell
             cell.textLabel?.text = SavedCountryController.favoritedCountries[indexPath.row].name
             cell.selectionStyle = .none
+            cell.accessoryView?.tintColor = .orange
             return cell
         }
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
